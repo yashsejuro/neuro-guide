@@ -5,6 +5,7 @@ import { Shell } from './Shell'
 import { Sidebar, SidebarGroup, SidebarItem } from '@blinkdotnew/ui'
 import { LayoutDashboard, User, CheckSquare, Heart, LogOut, Bell } from 'lucide-react'
 import { supabase } from './lib/supabase'
+import { FloatingChat } from './components/chat/FloatingChat'
 
 // Page imports
 import { LandingPage } from './pages/Landing'
@@ -112,6 +113,7 @@ const rootRoute = createRootRoute({
         <div className="min-h-screen bg-background/50">
           <Outlet />
         </div>
+        <FloatingChat />
       </Shell>
     )
   },

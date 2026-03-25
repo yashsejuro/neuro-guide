@@ -7,6 +7,7 @@ import './lib/chart-setup'
 import App from './App'
 import './index.css'
 import './landing.css'
+import './chat.css'
 
 const queryClient = new QueryClient()
 
