@@ -1,0 +1,36 @@
+@import '@blinkdotnew/ui/styles';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 262 30% 96%;
+    --secondary-foreground: 262 83% 20%;
+    --accent: 142 70% 45%;
+    --accent-foreground: 0 0% 100%;
+    --background: 262 50% 99%;
+    --foreground: 262 83% 5%;
+    --border: 262 30% 90%;
+    --input: 262 30% 90%;
+    --ring: 262 83% 58%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --primary: 262 83% 65%;
+    --primary-foreground: 0 0% 100%;
+    --background: 262 40% 5%;
+    --foreground: 262 30% 98%;
+    --border: 262 30% 15%;
+    --input: 262 30% 15%;
+  }
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
