@@ -6,6 +6,8 @@ import { Sidebar, SidebarGroup, SidebarItem } from '@blinkdotnew/ui'
 import { LayoutDashboard, User, CheckSquare, Heart, LogOut, Bell } from 'lucide-react'
 import { supabase } from './lib/supabase'
 import { FloatingChat } from './components/chat/FloatingChat'
+import { ThemeToggle } from './components/ThemeToggle'
+import { MusicButton } from './components/MusicButton'
 
 // Page imports
 import { LandingPage } from './pages/Landing'
@@ -63,10 +65,13 @@ const rootRoute = createRootRoute({
         sidebar={
           <Sidebar>
             <div className="p-4 border-b">
-              <h1 className="text-xl font-bold text-primary flex items-center gap-2">
-                <Heart className="w-6 h-6 fill-primary" />
-                Neuro Guide
-              </h1>
+              <div className="flex items-center justify-between">
+                <h1 className="text-xl font-bold text-primary flex items-center gap-2">
+                  <Heart className="w-6 h-6 fill-primary" />
+                  Neuro Guide
+                </h1>
+                <ThemeToggle />
+              </div>
             </div>
             <div className="flex-1 py-4">
               <SidebarGroup>
@@ -97,7 +102,10 @@ const rootRoute = createRootRoute({
                 />
               </SidebarGroup>
             </div>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t space-y-3">
+              <div className="px-2">
+                <MusicButton />
+              </div>
               <SidebarItem 
                 icon={<LogOut size={18} />} 
                 label="Logout" 
