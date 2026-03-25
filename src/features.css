@@ -23,10 +23,11 @@
 .ng-theme-icon {
   width: 14px;
   height: 14px;
-  color: hsl(var(--foreground) / 0.3);
+  color: hsl(var(--foreground) / 30%);
   transition: all 0.3s ease;
   z-index: 1;
 }
+
 .ng-theme-icon-active {
   color: hsl(var(--primary));
 }
@@ -40,8 +41,9 @@
   border-radius: 50%;
   background: hsl(var(--primary));
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
 }
+
 .ng-theme-thumb-dark {
   transform: translateX(24px);
 }
@@ -54,16 +56,17 @@
   padding: 6px 14px;
   border-radius: 10px;
   border: 1px solid hsl(var(--border));
-  background: hsl(var(--secondary) / 0.5);
+  background: hsl(var(--secondary) / 50%);
   color: hsl(var(--foreground));
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .ng-music-btn:hover {
-  border-color: hsl(var(--primary) / 0.4);
-  background: hsl(var(--primary) / 0.08);
+  border-color: hsl(var(--primary) / 40%);
+  background: hsl(var(--primary) / 8%);
 }
 
 .ng-music-dropdown {
@@ -76,7 +79,7 @@
   border-radius: 12px;
   background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 30%);
   animation: dropIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -98,6 +101,7 @@
   cursor: pointer;
   transition: background 0.15s;
 }
+
 .ng-music-item:hover {
   background: hsl(var(--secondary));
 }
@@ -110,6 +114,7 @@
   background: hsl(var(--secondary));
   overflow: hidden;
 }
+
 .ng-xp-fill {
   height: 100%;
   border-radius: 3px;
@@ -123,13 +128,14 @@
   gap: 6px;
   padding: 4px 10px;
   border-radius: 8px;
-  background: hsl(var(--secondary) / 0.5);
+  background: hsl(var(--secondary) / 50%);
   border: 1px solid hsl(var(--border));
   font-size: 0.75rem;
   transition: all 0.2s;
 }
+
 .ng-badge:hover {
-  border-color: hsl(var(--primary) / 0.3);
+  border-color: hsl(var(--primary) / 30%);
   transform: translateY(-1px);
 }
 
@@ -138,44 +144,4 @@
   filter: grayscale(1);
 }
 
-/* ===== LIGHT MODE ENHANCEMENTS ===== */
-:root:not(.dark) .ng-chat-window {
-  background: hsl(var(--background));
-  border-color: hsl(var(--border));
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
-}
-:root:not(.dark) .ng-chat-bubble-ai {
-  background: hsl(var(--secondary));
-  border-color: hsl(var(--border));
-}
-:root:not(.dark) .ng-chat-body {
-  background: hsl(var(--background));
-}
-:root:not(.dark) .ng-chat-header {
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--primary) / 0.03));
-}
-:root:not(.dark) .ng-chat-header h3 {
-  color: hsl(var(--foreground));
-}
-:root:not(.dark) .ng-chat-header p {
-  color: hsl(var(--foreground) / 0.5);
-}
-:root:not(.dark) .ng-chat-input {
-  background: hsl(var(--secondary));
-  border-color: hsl(var(--border));
-  color: hsl(var(--foreground));
-}
-:root:not(.dark) .ng-chat-input-wrap {
-  background: hsl(var(--background));
-  border-color: hsl(var(--border));
-}
-:root:not(.dark) .ng-chat-prompt-btn {
-  background: hsl(var(--secondary));
-  border-color: hsl(var(--border));
-  color: hsl(var(--foreground));
-}
-
-/* Smooth body transition */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+/* removed legacy light mode overrides since chat.css now natively supports variables */

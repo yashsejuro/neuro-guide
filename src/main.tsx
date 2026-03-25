@@ -9,18 +9,25 @@ import './index.css'
 import './landing.css'
 import './chat.css'
 import './features.css'
-import { ThemeProvider } from './hooks/useTheme'
+import { ThemeProvider, useTheme } from './hooks/useTheme'
 
 const queryClient = new QueryClient()
+
+function ThemedApp() {
+  const { theme } = useTheme()
+  return (
+    <BlinkUIProvider theme="minimal" darkMode={theme}>
+      <Toaster richColors theme={theme} />
+      <App />
+    </BlinkUIProvider>
+  )
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <BlinkUIProvider theme="minimal" darkMode="system">
-          <Toaster richColors theme="dark" />
-          <App />
-        </BlinkUIProvider>
+        <ThemedApp />
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>,

@@ -64,7 +64,7 @@ const rootRoute = createRootRoute({
         appName="Neuro Guide"
         sidebar={
           <Sidebar>
-            <div className="p-4 border-b">
+            <div className="p-4 border-b border-border">
               <div className="flex items-center justify-between">
                 <h1 className="text-xl font-bold text-primary flex items-center gap-2">
                   <Heart className="w-6 h-6 fill-primary" />
@@ -102,7 +102,7 @@ const rootRoute = createRootRoute({
                 />
               </SidebarGroup>
             </div>
-            <div className="p-4 border-t space-y-3">
+            <div className="p-4 border-t border-border space-y-3">
               <div className="px-2">
                 <MusicButton />
               </div>
@@ -118,7 +118,7 @@ const rootRoute = createRootRoute({
           </Sidebar>
         }
       >
-        <div className="min-h-screen bg-background/50">
+        <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
           <Outlet />
         </div>
         <FloatingChat />

@@ -16,16 +16,19 @@
   justify-content: center;
   color: #fff;
   background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-  box-shadow: 0 4px 24px rgba(139, 92, 246, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 24px rgb(139 92 246 / 40%), 0 2px 8px rgb(0 0 0 / 20%);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 .ng-chat-fab:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 32px rgba(139, 92, 246, 0.55), 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 32px rgb(139 92 246 / 55%), 0 4px 16px rgb(0 0 0 / 25%);
 }
+
 .ng-chat-fab:active {
   transform: scale(0.95);
 }
+
 .ng-chat-fab-active {
   background: linear-gradient(135deg, #6b21a8, #4c1d95);
   transform: rotate(0deg);
@@ -43,6 +46,7 @@
   border: 2px solid #0a0a12;
   animation: unreadPulse 2s ease-in-out infinite;
 }
+
 @keyframes unreadPulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.2); }
@@ -59,25 +63,27 @@
   border-radius: 1.25rem;
   display: flex;
   flex-direction: column;
-  background: #111118;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.08);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 24px 80px rgb(0 0 0 / 15%), 0 0 40px rgb(var(--primary-rgb, 139, 92, 246), 0.08);
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform-origin: bottom right;
 }
+
 .ng-chat-open {
   opacity: 1;
   transform: scale(1) translateY(0);
   pointer-events: auto;
 }
+
 .ng-chat-closed {
   opacity: 0;
   transform: scale(0.85) translateY(20px);
   pointer-events: none;
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .ng-chat-window {
     width: calc(100vw - 16px);
     right: 8px;
@@ -85,6 +91,7 @@
     max-height: calc(100vh - 120px);
     border-radius: 1rem;
   }
+
   .ng-chat-fab {
     bottom: 16px;
     right: 16px;
@@ -97,8 +104,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.08));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(135deg, hsl(var(--primary) / 10%), hsl(var(--primary) / 5%));
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .ng-chat-header-icon {
@@ -117,17 +124,18 @@
   height: 28px;
   border-radius: 8px;
   border: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.5);
+  background: hsl(var(--border) / 50%);
+  color: hsl(var(--foreground) / 50%);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
 }
+
 .ng-chat-close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: hsl(var(--border));
+  color: hsl(var(--foreground));
 }
 
 /* Messages Body */
@@ -147,11 +155,13 @@
 .ng-chat-body::-webkit-scrollbar {
   width: 4px;
 }
+
 .ng-chat-body::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .ng-chat-body::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: hsl(var(--foreground) / 10%);
   border-radius: 4px;
 }
 
@@ -161,6 +171,7 @@
   gap: 8px;
   animation: msgSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 @keyframes msgSlideIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -169,6 +180,7 @@
 .ng-chat-msg-user {
   justify-content: flex-end;
 }
+
 .ng-chat-msg-ai {
   justify-content: flex-start;
   align-items: flex-start;
@@ -195,20 +207,20 @@
   border-radius: 1rem;
   font-size: 0.84rem;
   line-height: 1.6;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   position: relative;
 }
 
 .ng-chat-bubble-user {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
-  color: #fff;
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+  color: hsl(var(--primary-foreground));
   border-bottom-right-radius: 4px;
 }
 
 .ng-chat-bubble-ai {
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
   border-bottom-left-radius: 4px;
 }
 
@@ -216,7 +228,6 @@
   max-height: 120px;
   overflow: hidden;
   mask-image: linear-gradient(to bottom, black 60%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
 }
 
 .ng-chat-expand-btn {
@@ -224,25 +235,27 @@
   align-items: center;
   gap: 4px;
   font-size: 0.7rem;
-  color: #a78bfa;
+  color: hsl(var(--primary));
   background: none;
   border: none;
   cursor: pointer;
   padding: 4px 0 0;
   transition: color 0.2s;
 }
+
 .ng-chat-expand-btn:hover {
-  color: #c4b5fd;
+  opacity: 0.8;
 }
 
 .ng-chat-time {
   font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.25);
+  color: hsl(var(--foreground) / 40%);
   margin-top: 4px;
 }
+
 .ng-chat-bubble-user .ng-chat-time {
   text-align: right;
-  color: rgba(255, 255, 255, 0.4);
+  color: hsl(var(--primary-foreground) / 70%);
 }
 
 /* Typing Indicator */
@@ -281,16 +294,17 @@
   font-size: 0.72rem;
   padding: 6px 12px;
   border-radius: 9999px;
-  background: rgba(139, 92, 246, 0.08);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  color: #c4b5fd;
+  background: hsl(var(--secondary) / 80%);
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
 }
+
 .ng-chat-prompt-btn:hover {
-  background: rgba(139, 92, 246, 0.15);
-  border-color: rgba(139, 92, 246, 0.4);
+  background: hsl(var(--secondary));
+  border-color: hsl(var(--primary) / 40%);
   transform: translateY(-1px);
 }
 
@@ -300,17 +314,17 @@
   align-items: flex-end;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
 }
 
 .ng-chat-input {
   flex: 1;
   resize: none;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid hsl(var(--border) / 50%);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  color: #e2e8f0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
   padding: 10px 14px;
   font-size: 0.84rem;
   line-height: 1.5;
@@ -320,12 +334,15 @@
   transition: border-color 0.2s;
   font-family: inherit;
 }
+
 .ng-chat-input::placeholder {
-  color: rgba(255, 255, 255, 0.25);
+  color: hsl(var(--muted-foreground));
 }
+
 .ng-chat-input:focus {
-  border-color: rgba(139, 92, 246, 0.4);
+  border-color: hsl(var(--primary));
 }
+
 .ng-chat-input:disabled {
   opacity: 0.5;
 }
@@ -344,13 +361,16 @@
   flex-shrink: 0;
   transition: all 0.2s;
 }
+
 .ng-chat-send-btn:hover:not(:disabled) {
   transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 16px rgb(139 92 246 / 40%);
 }
+
 .ng-chat-send-btn:active:not(:disabled) {
   transform: scale(0.95);
 }
+
 .ng-chat-send-btn:disabled {
   opacity: 0.3;
   cursor: default;
