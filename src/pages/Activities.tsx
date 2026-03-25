@@ -3,6 +3,7 @@ import { Page, PageHeader, PageTitle, PageActions, PageBody, Card, CardContent, 
 import { Plus, Check, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { addXP, XP_PER_TASK } from '../lib/gamification'
 
 export function ActivitiesPage() {
   const { user } = useAuth()
@@ -60,6 +61,16 @@ export function ActivitiesPage() {
           const isYesterday = lastDate.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]
           const newCount = isYesterday ? streak.count + 1 : 1
           await supabase.from('streaks').update({ count: newCount, last_date: today }).eq('user_id', user!.id)
+        }
+        
+        // Gamification: Add XP
+        try {
+          await addXP(user!.id, XP_PER_TASK)
+          toast.success(`Task completed! +${XP_PER_TASK} XP 🔥`)
+        } catch (err: any) {
+          // Fallback if DB column doesn't exist yet
+          console.warn("XP system requires database migration", err)
+          toast.success('Task completed! 🎉')
         }
       }
       fetchActivities()

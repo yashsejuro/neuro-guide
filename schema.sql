@@ -7,6 +7,7 @@ CREATE TABLE profiles (
   user_id uuid REFERENCES auth.users(id) NOT NULL UNIQUE,
   display_name text,
   condition text,
+  xp int DEFAULT 0,
   created_at timestamptz DEFAULT now()
 );
 

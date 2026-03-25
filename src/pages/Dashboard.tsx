@@ -11,6 +11,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { LineChart } from '@blinkdotnew/ui'
 import { STRUCTURED_RECOMMENDATIONS, getProfile, Condition, Suggestion } from '../lib/recommendations'
+import { getXP, getCompletedTasksCount, addXP, calculateLevel, xpProgress, getEarnedBadges, XP_PER_TASK, ALL_BADGES } from '../lib/gamification'
 import { format } from 'date-fns'
 
 // Supportive messages based on streak
@@ -91,6 +92,8 @@ export function DashboardPage() {
   const [streak, setStreak] = useState(0)
   const [activities, setActivities] = useState<any[]>([])
   const [reminders, setReminders] = useState<any[]>([])
+  const [xp, setXp] = useState(0)
+  const [totalTasks, setTotalTasks] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -101,12 +104,14 @@ export function DashboardPage() {
     if (!user) return
     setLoading(true)
     try {
-      const [profData, moodData, streakData, actData, remData] = await Promise.all([
+      const [profData, moodData, streakData, actData, remData, userXp, tasksDone] = await Promise.all([
         getProfile(user.id),
         supabase.from('moods').select('*').eq('user_id', user.id).order('created_at', { ascending: true }).limit(7),
         supabase.from('streaks').select('*').eq('user_id', user.id).maybeSingle(),
         supabase.from('activities').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5),
-        supabase.from('reminders').select('*').eq('user_id', user.id).order('time', { ascending: true })
+        supabase.from('reminders').select('*').eq('user_id', user.id).order('time', { ascending: true }),
+        getXP(user.id).catch(() => 0), // Catch schema errors if not migrated yet
+        getCompletedTasksCount(user.id).catch(() => 0),
       ])
 
       setProfile(profData)
@@ -114,6 +119,8 @@ export function DashboardPage() {
       setStreak(streakData.data?.count || 0)
       setActivities(actData.data || [])
       setReminders(remData.data || [])
+      setXp(userXp)
+      setTotalTasks(tasksDone)
     } catch (err: any) {
       console.error(err)
     } finally {
@@ -137,6 +144,15 @@ export function DashboardPage() {
         const isYesterday = lastDate.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]
         await supabase.from('streaks').update({ count: isYesterday ? streakData.count + 1 : 1, last_date: today }).eq('user_id', user!.id)
       }
+      
+      // Add XP for completing a task on the dashboard
+      try {
+        await addXP(user!.id, XP_PER_TASK)
+        toast.success(`Task completed! +${XP_PER_TASK} XP 🔥`)
+      } catch (err: any) {
+        console.warn("XP system requires db migration", err)
+      }
+      
       fetchData()
     }
   }
@@ -153,6 +169,11 @@ export function DashboardPage() {
   const pendingActivities = activities.filter(a => !a.completed)
   const completedActivities = activities.filter(a => a.completed)
   const moodInsight = getMoodInsight(moods)
+  
+  // Gamification derived state
+  const currentLevel = calculateLevel(xp)
+  const progressPercent = xpProgress(xp)
+  const earnedBadges = getEarnedBadges(xp, streak, totalTasks)
 
   const moodLabels: Record<number, string> = { 1: 'Low', 2: 'Below Avg', 3: 'Okay', 4: 'Good', 5: 'Great' }
   const latestMood = moods.length > 0 ? moods[moods.length - 1]?.score : null
@@ -171,11 +192,35 @@ export function DashboardPage() {
   return (
     <Page>
       <PageHeader>
-        <div>
-          <PageTitle>Welcome back, {profile?.display_name || 'there'} 👋</PageTitle>
-          <p className="text-sm text-muted-foreground mt-1">{getStreakMessage(streak)}</p>
+        <div className="flex w-full items-start justify-between">
+          <div>
+            <PageTitle>Welcome back, {profile?.display_name || 'there'} 👋</PageTitle>
+            <p className="text-sm text-muted-foreground mt-1">{getStreakMessage(streak)}</p>
+          </div>
+          {/* Level & XP Shield */}
+          <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-xl border border-border bg-secondary/30">
+            <div className="flex flex-col items-end">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Level {currentLevel}</span>
+              <span className="text-sm font-semibold text-primary">{xp} XP</span>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+              <span className="text-lg">🛡️</span>
+            </div>
+          </div>
         </div>
       </PageHeader>
+      
+      {/* Mobile XP Bar */}
+      <div className="sm:hidden px-4 md:px-8">
+        <div className="flex justify-between items-end mb-1">
+          <span className="text-xs font-bold text-muted-foreground uppercase">Level {currentLevel}</span>
+          <span className="text-xs text-primary font-medium">{xp} XP</span>
+        </div>
+        <div className="ng-xp-bar">
+          <div className="ng-xp-fill" style={{ width: `${progressPercent}%` }} />
+        </div>
+      </div>
+
       <PageBody className="space-y-6">
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -224,6 +269,28 @@ export function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Badges Collection Row */}
+        {earnedBadges.length > 0 && (
+          <div className="py-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">Your Badges</h3>
+            <div className="flex flex-wrap gap-2">
+              {ALL_BADGES.map(badge => {
+                const isEarned = earnedBadges.some(eb => eb.id === badge.id)
+                return (
+                  <div 
+                    key={badge.id}
+                    className={`ng-badge ${!isEarned ? 'ng-badge-locked border-dashed' : ''}`}
+                    title={badge.description}
+                  >
+                    <span>{badge.emoji}</span>
+                    <span className="font-medium text-foreground">{badge.label}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Mood Graph + Suggestions */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
