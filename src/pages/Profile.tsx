@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Page, PageHeader, PageTitle, PageBody, Card, CardHeader, CardTitle, CardContent, Button, Select, SelectTrigger, SelectValue, SelectContent, SelectItem, Input, toast } from '@blinkdotnew/ui'
 import { getProfile, updateProfile, CONDITIONS, Condition } from '../lib/recommendations'
 import { useAuth } from '../hooks/useAuth'
@@ -59,11 +59,14 @@ export function ProfilePage() {
             <div className="space-y-2">
               <label className="text-sm font-medium">Primary Focus / Condition</label>
               <Select value={condition} onValueChange={(val) => setCondition(val as Condition)}>
+                {/* @ts-ignore React 18.3 type conflict */}
                 <SelectTrigger>
                   <SelectValue placeholder="Select what you'd like help with" />
                 </SelectTrigger>
+                {/* @ts-ignore React 18.3 type conflict */}
                 <SelectContent>
                   {CONDITIONS.map((c) => (
+                    // @ts-ignore React 18.3 type conflict
                     <SelectItem key={c} value={c}>{c}</SelectItem>
                   ))}
                 </SelectContent>

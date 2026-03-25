@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Page, PageHeader, PageTitle, PageBody, Card, CardHeader, CardTitle, CardContent, Button, toast, EmptyState } from '@blinkdotnew/ui'
 import { Heart, Star } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -30,6 +30,7 @@ export function MoodPage() {
     // Check if user already logged mood today
     const exists = data?.find(m => m.created_at.startsWith(today))
     if (exists) setTodayMood(exists.score)
+    else setTodayMood(null)
     
     setLoading(false)
   }
@@ -63,7 +64,7 @@ export function MoodPage() {
       .from('streaks')
       .select('*')
       .eq('user_id', userId)
-      .single()
+      .maybeSingle()
     
     if (!streak) {
       await supabase.from('streaks').insert({ user_id: userId, count: 1, last_date: today })

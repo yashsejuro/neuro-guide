@@ -9,7 +9,7 @@
  * The sidebar is hidden on mobile and toggled by the built-in hamburger button.
  * Customize sidebar width, colors, and nav items — but keep this structure.
  */
-import React from 'react'
+import type { ReactNode } from 'react'
 import {
   AppShell,
   AppShellSidebar,
@@ -19,10 +19,10 @@ import {
 
 interface ShellProps {
   /** Sidebar content — e.g. <Sidebar><SidebarItem .../></Sidebar> */
-  sidebar: React.ReactNode
+  sidebar: ReactNode
   /** App name shown in mobile header */
   appName?: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export function Shell({ sidebar, appName = 'App', children }: ShellProps) {

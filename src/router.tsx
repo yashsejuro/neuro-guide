@@ -1,12 +1,13 @@
-import { createRouter, createRootRoute, createRoute, Outlet, useRouter } from '@tanstack/react-router'
+import { createRouter, createRootRoute, createRoute, Outlet, useRouter, useLocation } from '@tanstack/react-router'
 import { useAuth } from './hooks/useAuth'
-import React from 'react'
+import { useEffect } from 'react'
 import { Shell } from './Shell'
 import { Sidebar, SidebarGroup, SidebarItem } from '@blinkdotnew/ui'
 import { LayoutDashboard, User, CheckSquare, Heart, LogOut, Bell } from 'lucide-react'
 import { supabase } from './lib/supabase'
 
 // Page imports
+import { LandingPage } from './pages/Landing'
 import { DashboardPage } from './pages/Dashboard'
 import { ProfilePage } from './pages/Profile'
 import { ActivitiesPage } from './pages/Activities'
@@ -20,20 +21,26 @@ const rootRoute = createRootRoute({
   component: () => {
     const { user, loading } = useAuth()
     const router = useRouter()
+    const location = useLocation()
     
-    // Check path to see if it's an auth page
-    const currentPath = window.location.pathname
-    const isAuthPage = currentPath === '/login' || currentPath === '/signup'
+    const currentPath = location.pathname
+    // Public pages: landing, login, signup
+    const isPublicPage = currentPath === '/' || currentPath === '/login' || currentPath === '/signup'
+    // Auth-only pages (inside shell)
+    const isAppPage = !isPublicPage
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (!loading) {
-        if (!user && !isAuthPage) {
-          router.navigate({ to: '/login' })
-        } else if (user && isAuthPage) {
+        // If not logged in and trying to access app pages, redirect to landing
+        if (!user && isAppPage) {
           router.navigate({ to: '/' })
         }
+        // If logged in and on login/signup, redirect to dashboard
+        if (user && (currentPath === '/login' || currentPath === '/signup')) {
+          router.navigate({ to: '/dashboard' })
+        }
       }
-    }, [loading, user, router, isAuthPage])
+    }, [loading, user, router, isAppPage, currentPath])
 
     if (loading) {
       return (
@@ -43,9 +50,11 @@ const rootRoute = createRootRoute({
       )
     }
 
-    if (!user && !isAuthPage) return null
+    // Public pages render without the shell
+    if (isPublicPage) return <Outlet />
 
-    if (isAuthPage) return <Outlet />
+    // App pages require auth
+    if (!user) return null
 
     return (
       <Shell
@@ -63,7 +72,7 @@ const rootRoute = createRootRoute({
                 <SidebarItem 
                   icon={<LayoutDashboard size={18} />} 
                   label="Dashboard" 
-                  href="/" 
+                  href="/dashboard" 
                 />
                 <SidebarItem 
                   icon={<User size={18} />} 
@@ -93,7 +102,7 @@ const rootRoute = createRootRoute({
                 label="Logout" 
                 onClick={async () => {
                   await supabase.auth.signOut()
-                  router.navigate({ to: '/login' })
+                  router.navigate({ to: '/' })
                 }}
               />
             </div>
@@ -108,10 +117,17 @@ const rootRoute = createRootRoute({
   },
 })
 
-// Index route
-const indexRoute = createRoute({
+// Landing route (public)
+const landingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
+  component: LandingPage,
+})
+
+// Dashboard route (authenticated)
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
   component: DashboardPage,
 })
 
@@ -159,7 +175,8 @@ const signupRoute = createRoute({
 
 // Create the route tree
 const routeTree = rootRoute.addChildren([
-  indexRoute,
+  landingRoute,
+  dashboardRoute,
   profileRoute,
   activitiesRoute,
   moodRoute,

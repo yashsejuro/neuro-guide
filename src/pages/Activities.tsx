@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Page, PageHeader, PageTitle, PageActions, PageBody, Card, CardContent, Button, Input, toast, EmptyState } from '@blinkdotnew/ui'
 import { Plus, Check, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -49,7 +49,7 @@ export function ActivitiesPage() {
       if (!currentStatus) {
         // Just completed it - update streak
         const today = new Date().toISOString().split('T')[0]
-        const { data: streak } = await supabase.from('streaks').select('*').eq('user_id', user!.id).single()
+        const { data: streak } = await supabase.from('streaks').select('*').eq('user_id', user!.id).maybeSingle()
         
         if (!streak) {
           await supabase.from('streaks').insert({ user_id: user!.id, count: 1, last_date: today })

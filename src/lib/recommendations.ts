@@ -35,16 +35,16 @@ export async function getProfile(userId: string) {
     .from('profiles')
     .select('*')
     .eq('user_id', userId)
-    .single()
+    .maybeSingle()
   
-  if (error && error.code !== 'PGRST116') throw error
+  if (error) throw error
   return data
 }
 
 export async function updateProfile(userId: string, updates: { condition?: Condition; display_name?: string }) {
   const { data, error } = await supabase
     .from('profiles')
-    .upsert({ user_id: userId, ...updates })
+    .upsert({ user_id: userId, ...updates }, { onConflict: 'user_id' })
     .select()
     .single()
   
